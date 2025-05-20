@@ -3,727 +3,783 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>提案資料</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>飲食店向けご提案書</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans JP', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5; /* 背景色 */
-            color: #333; /* 基本文字色 */
+            background-color: #f0f2f5;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 100px; /* ナビゲーションボタンのためのスペース */
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            padding-bottom: 80px; /* ボタンのためのスペース */
         }
 
         .slide-container {
             width: 100%;
-            max-width: 1000px; /* スライドの最大幅 */
-            margin-top: 20px;
+            max-width: 1000px; /* A4に近い比率のコンテナ */
             margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* 影を少し強調 */
-            border-radius: 12px; /* 角丸を少し大きく */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
             overflow: hidden;
-            position: relative;
+            position: relative; /* スライド表示の基準 */
         }
 
         .slide {
             width: 100%;
             height: 707px; /* A4比率 (1000px * sqrt(2)/2 ≈ 707px) */
-            padding: 30px 45px; /* パディング調整 上下30px, 左右45px */
+            padding: 40px 50px;
             box-sizing: border-box;
-            background-color: #ffffff; /* スライド背景色 */
+            background-color: #ffffff;
             display: none; /* JavaScriptで表示を制御 */
             flex-direction: column;
-            justify-content: flex-start; /* 内容を上から配置 */
+            justify-content: center;
             align-items: center;
-            text-align: center; /* 基本は中央揃え */
+            text-align: center;
+            /* border-bottom: 1px solid #e0e0e0;  スライドごとの区切り線は不要になる */
             position: relative; /* スライド番号の配置基準 */
         }
 
-        .slide.active {
+        .slide.active { /* アクティブなスライドを表示 */
             display: flex;
         }
 
-        .slide-main-content { /* スライドの主要コンテンツエリア */
-            width: 100%;
-            max-width: 900px; /* コンテンツの最大幅を少し広げる */
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* 内容を上から配置 */
-            overflow-y: auto; /* コンテンツが多い場合にスクロールを許容 */
-            max-height: calc(707px - 60px); /* 上下パディング分を考慮した最大高さ */
-        }
-        
+        /* .slide:last-child { スライドごとの区切り線は不要になるためコメントアウト
+            border-bottom: none;
+        } */
+
         .slide-title {
-            font-size: 2.2em; /* タイトルサイズ微調整 */
+            font-size: 2.2em;
             font-weight: 700;
-            color: #0D47A1; /* 濃い青 (Material Blue 900) */
-            margin-bottom: 15px; /* マージン調整 */
+            color: #1a237e; /* 濃い青 */
+            margin-bottom: 25px;
             line-height: 1.3;
-            text-align: center; /* スライドタイトルは中央揃え */
-            width: 100%; /* タイトルが中央に来るように */
         }
         
-        .section-title { /* スライド内のセクションタイトル */
-            font-size: 1.6em; /* 微調整 */
-            font-weight: 700;
-            color: #1565C0; /* やや明るい青 (Material Blue 700) */
-            margin-top: 12px; /* マージン調整 */
-            margin-bottom: 10px; /* マージン調整 */
-            text-align: left; /* セクションタイトルは左揃え */
-            width: 100%;
-            padding-bottom: 5px; /* 微調整 */
-            border-bottom: 2px solid #BBDEFB; /* (Material Blue 100) */
+        .slide-title.small {
+            font-size: 1.8em;
         }
         
-        .sub-section-title { /* 小見出し */
-            font-size: 1.2em; /* 微調整 */
+        .slide-title.extra-large-centered {
+            font-size: 3.5em; /* 特大タイトル */
             font-weight: 700;
-            color: #1E88E5; /* (Material Blue 500) */
-            margin-top: 12px; /* マージン調整 */
-            margin-bottom: 8px; /* マージン調整 */
-            text-align: left;
-            width: 100%;
+            color: #1a237e;
+            margin-bottom: 25px;
+            line-height: 1.3;
+            text-align: center; /* 中央揃え */
+            width: 100%; /* 幅を確保 */
         }
 
-        .slide-content p, .slide-content li, .persona-table td, .persona-table th {
-            font-size: 0.95em; /* 本文フォントサイズ微調整 */
-            line-height: 1.7; /* 行間微調整 */
-            color: #374151; /* やや濃いグレー */
-            text-align: left; /* 本文は左揃え */
-            margin-bottom: 6px; /* マージン調整 */
+
+        .slide-content {
+            font-size: 1.1em;
+            line-height: 1.8;
+            width: 100%;
+            max-width: 800px; /* コンテンツの最大幅 */
         }
 
         .slide-content ul {
-            list-style-type: none; /* デフォルトのマーカーを消す */
+            list-style-type: none;
             padding-left: 0;
-            text-align: left;
+            text-align: left; /* リスト項目は左揃え */
         }
 
         .slide-content ul li {
-            padding-left: 25px; /* アイコン/マーカー用のスペース微調整 */
+            margin-bottom: 12px;
+            padding-left: 25px; /* アイコン用のスペース */
             position: relative;
-            margin-bottom: 6px; /* マージン調整 */
         }
 
         .slide-content ul li::before {
-            content: '•'; /* カスタムマーカー (中点) */
-            color: #1E88E5; /* マーカーの色 (Material Blue 500) */
+            content: '✓'; /* デフォルトのチェックマーク */
+            color: #4caf50; /* 緑 */
             font-weight: bold;
-            font-size: 1.05em; /* 微調整 */
             position: absolute;
-            left: 5px;
-            top: 1px; /* 位置微調整 */
+            left: 0;
         }
         
-        .slide-content ol {
-            list-style-type: none;
-            padding-left: 0;
-            counter-reset: item;
-            text-align: left;
+        .slide-content .highlight {
+            color: #d32f2f; /* 赤系 */
+            font-weight: bold;
         }
-        .slide-content ol li {
-            padding-left: 30px; /* 微調整 */
-            position: relative;
-            margin-bottom: 6px; /* マージン調整 */
+        .slide-content .emphasis-point {
+            font-weight: bold;
+            color: #1a237e; /* テーマカラーの青 */
         }
-        .slide-content ol li::before {
-            content: counter(item) ". ";
-            counter-increment: item;
-            color: #0D47A1; /* 番号の色 */
-            font-weight: 700;
+        .slide-content .sub-description {
+            font-size: 0.9em;
+            color: #555;
+            display: block; /* ブロック要素として改行 */
+            margin-top: 5px; /* 上のテキストとの間隔 */
+            line-height: 1.6;
+        }
+
+
+        .slide-footer { /* 現在は未使用ですが、フッターが必要な場合のために残しています */
             position: absolute;
-            left: 5px;
-            top: 0;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            color: #757575;
         }
 
-        .highlight-text {
-            font-weight: 700;
-            color: #D32F2F; /* 強調したいテキストの色 (Material Red 700) */
-        }
-        .accent-text {
-            font-weight: 500;
-            color: #0277BD; /* (Material Light Blue 700) */
+        .company-info {
+            font-size: 0.9em;
+            margin-top: 15px;
         }
 
-        .info-box {
-            background-color: #E3F2FD; /* (Material Blue 50) */
-            border-left: 4px solid #2196F3; /* (Material Blue 500) */
-            padding: 12px; /* パディング調整 */
-            margin: 15px 0; /* マージン調整 */
-            border-radius: 6px;
-        }
-        .info-box p, .info-box li {
-            color: #0D47A1; /* ボックス内の文字色 */
-            font-size: 0.9em; /* ボックス内フォント微調整 */
-        }
-        .info-box .sub-section-title {
-             margin-top: 0;
-             color: #0D47A1;
-             border-bottom: none;
-             font-size: 1.1em; /* 微調整 */
-        }
-
-        .flow-chart-container {
+        .icon-text {
             display: flex;
-            justify-content: center; /* 中央揃え */
-            align-items: center;
-            margin: 15px 0; /* マージン調整 */
-            width: 100%;
-            flex-wrap: wrap; /* モバイル対応 */
+            align-items: center; /* SVGとテキストを垂直中央揃え */
+            justify-content: center; /* アイコンとテキストのブロックを中央揃え */
+            margin-bottom: 20px;
+            font-size: 1.2em; /* テキストサイズ調整 */
+            width: 100%; /* 親要素の幅に合わせる */
         }
-        .flow-step {
-            padding: 8px 12px; /* パディング微調整 */
-            border: 2px solid #1565C0; /* 枠線の色 */
+        .icon-text svg {
+            width: 30px; /* SVGアイコンのサイズ */
+            height: 30px;
+            margin-right: 10px; /* アイコンとテキストの間隔 */
+            fill: #1a237e; /* アイコンの色 */
+            flex-shrink: 0; /* SVGが縮まないようにする */
+        }
+        .icon-text p {
+            /* text-align: left; はここで指定すると、icon-text全体が左に寄ってしまう可能性があるため、インラインで指定 */
+            /* 必要であれば、pタグにmax-widthを指定して、テキストが長くなりすぎないように調整 */
+        }
+        
+        .google-review-mock {
+            border: 1px solid #ddd;
+            padding: 15px;
             border-radius: 8px;
-            background-color: #E3F2FD; /* 薄い青背景 */
-            font-weight: 500;
-            font-size: 0.85em; /* フォントサイズ微調整 */
-            text-align: center;
-            margin: 4px; /* 微調整 */
-            min-width: 100px; /* 最小幅微調整 */
-            line-height: 1.25; /* 行間微調整 */
+            background-color: #f9f9f9;
+            margin: 20px auto; /* 上下左右中央 */
+            width: fit-content; /* 内容に合わせた幅 */
         }
-        .flow-arrow {
-            font-size: 1.6em; /* 矢印サイズ微調整 */
-            color: #1565C0; /* 矢印の色 */
-            margin: 0 5px; /* マージン微調整 */
-            display: flex;
-            align-items: center;
+        .google-review-mock p { margin: 5px 0; }
+        .stars { color: #fbc02d; font-size: 1.2em; }
+
+        .equation {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #1a237e; /* 方程式のテキスト色 */
         }
-        
+        .equation span {
+            padding: 0 10px; /* 各要素の間隔 */
+        }
+        .equation .operator {
+            color: #4caf50; /* 演算子の色 */
+        }
+
         .two-column-layout {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around; /* カラム間のスペース */
             width: 100%;
-            margin-top: 12px; /* マージン調整 */
-            gap: 15px; /* カラム間のスペース微調整 */
+            margin-top: 20px;
         }
         .column {
-            width: calc(50% - 7.5px); /* ギャップを考慮した幅 */
-            padding: 12px; /* パディング調整 */
-            border: 1px solid #B0BEC5; /* (Material Blue Grey 200) */
+            width: 45%; /* 各カラムの幅 */
+            padding: 15px;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
-            background-color: #ECEFF1; /* (Material Blue Grey 50) */
+            background-color: #f9f9f9;
         }
-        .column .sub-section-title {
-            font-size: 1.1em; /* 微調整 */
+        .column h3 {
+            font-size: 1.3em;
+            color: #1a237e;
             margin-top: 0;
-            border-bottom: 1px solid #78909C; /* (Material Blue Grey 400) */
-            padding-bottom: 4px; /* 微調整 */
+            border-bottom: 2px solid #4caf50; /* 見出しの下線 */
+            padding-bottom: 5px;
+            word-break: keep-all; /* 日本語の改行を適切に */
         }
         .column ul li::before {
-            content: '›';
-            color: #1565C0;
+            content: '›'; /* リストマーカーを変更 */
+            color: #1a237e; /* マーカーの色 */
         }
 
+        .flow-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            width: 100%;
+        }
+        .flow-step {
+            padding: 10px 15px;
+            border: 2px solid #1a237e;
+            border-radius: 8px;
+            background-color: #e3f2fd; /* 薄い青背景 */
+            font-weight: bold;
+            position: relative; /* アニメーションや装飾の基準 */
+            line-height: 1.4; /* 行間を調整 */
+        }
+        .flow-arrow {
+            font-size: 2em; /* 矢印のサイズ */
+            color: #4caf50; /* 矢印の色 */
+            margin: 0 5px; /* 矢印の左右マージン調整 */
+        }
+        .clog-point { /* 詰まっているポイントのスタイル */
+            border-color: #d32f2f; /* 赤い枠線 */
+            background-color: #ffebee; /* 薄い赤背景 */
+            animation: pulse 1.5s infinite; /* 点滅アニメーション */
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+        }
+
+        .big-keyword {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4caf50; /* キーワードの色 */
+            margin: 20px 0;
+            padding: 10px;
+            border: 3px dashed #4caf50; /* 点線枠 */
+            display: inline-block; /* インラインブロック要素として表示 */
+        }
+        
+        .calendar-mock {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left; /* カレンダー内容は左揃え */
+        }
+        .calendar-mock h4 { margin-top: 0; }
+        .calendar-mock ul { padding-left: 20px; list-style: disc; } /* 通常の黒丸リスト */
+
+        .contact-info p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .gear-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .gear {
+            width: 80px;
+            height: 80px;
+            background-color: #757575; /* グレー */
+            border-radius: 50%;
+            position: relative;
+            margin: 0 5px; /* 歯車同士の間隔 */
+            display: flex; /* テキストを中央に配置するため */
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* 歯車の歯を擬似要素で表現 */
+        .gear::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 100px; background-color: #757575; border-radius: 5px;
+        }
+        .gear::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: -10px; transform: translateY(-50%);
+            width: 100px; height: 20px; background-color: #757575; border-radius: 5px;
+        }
+        
+        .gear.mismatched {
+            background-color: #ef9a9a; /* 薄い赤 */
+            animation: slight-wiggle 0.5s ease-in-out infinite alternate; /* 噛み合わない動き */
+        }
+        .gear.mismatched::before, .gear.mismatched::after {
+            background-color: #ef9a9a; /* 歯も同じ色に */
+        }
+
+        @keyframes slight-wiggle {
+            from { transform: rotate(-2deg) translateX(-3px); }
+            to { transform: rotate(2deg) translateX(3px); }
+        }
+        
         .slide-number {
             position: absolute;
-            bottom: 15px; /* 位置調整 */
-            right: 25px; /* 位置調整 */
-            font-size: 0.85em; /* 微調整 */
-            color: #757575; /* スライド番号の色 */
+            bottom: 20px;
+            right: 30px;
+            font-size: 0.9em;
+            color: #aaa; /* デフォルトのスライド番号色 */
+        }
+        
+        /* 中央揃えテキストリストのスタイル */
+        .centered-text-list li {
+            text-align: center; /* テキストを中央揃え */
+            padding-left: 0; /* ::before を使わないのでパディング不要 */
+            margin-bottom: 20px; /* 各項目間のマージン */
+            font-size: 1.2em; /* フォントサイズ調整 */
+        }
+        .centered-text-list li::before {
+            display: none; /* デフォルトのリストマーカーを非表示 */
+        }
+        .centered-text-list li strong { /* 太字スタイル */
+            font-weight: 700;
+        }
+        .centered-text-list .list-item-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #1a237e; /* タイトルの色 */
+            margin-bottom: 8px; /* タイトルと説明の間隔 */
+        }
+        .centered-text-list .list-item-description {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #333; /* 説明文の色 */
+            margin-bottom: 20px; /* 各項目の下のマージン */
+        }
+        
+        /* 問題点リストのスタイル */
+        .problem-list {
+            text-align: left; /* テキストは左揃え */
+            margin-top: 15px; /* 上のマージン */
+            padding-left: 25px; /* 番号表示のためのスペース */
+        }
+        .problem-list li {
+            font-size: 1.1em; /* フォントサイズ */
+            line-height: 1.7; /* 行間 */
+            margin-bottom: 20px; /* 各リストアイテム間のマージン */
+            padding-left: 10px; /* 番号とテキストの間隔 */
+            position: relative; /* 番号を絶対配置するための基準 */
+        }
+        .problem-list li::before {
+            content: counter(problem-item) "."; /* カウンターを表示 */
+            counter-increment: problem-item; /* カウンターをインクリメント */
+            color: #1a237e; /* 番号の色 */
+            font-weight: bold;
+            position: absolute;
+            left: -10px; /* 番号の位置調整 */
+        }
+        .problem-list-container { /* problem-list li の親要素に適用 */
+            list-style-type: none; /* デフォルトのリストマーカーを非表示 */
+            padding-left: 0;
+            counter-reset: problem-item; /* カウンターをリセット */
         }
 
-        .slide-theme-orange {
-            background-color: #F57C00 !important; 
-            color: #FFF3E0 !important; 
+
+        /* スライド1とスライド15(最終スライド)の共通オレンジテーマ */
+        .slide-orange-theme {
+            background-color: #F57C00 !important; /* オレンジ背景 (Material Design Orange 700) */
+            color: #FFF8E1 !important; /* クリーム色のテキスト (Material Design Amber 50) */
         }
-        .slide-theme-orange .slide-title,
-        .slide-theme-orange .section-title,
-        .slide-theme-orange .sub-section-title {
-            color: #FFFFFF !important;
+        .slide-orange-theme .slide-title {
+            color: #FFFFFF !important; /* タイトルは白 */
         }
-        .slide-theme-orange .slide-content p,
-        .slide-theme-orange .slide-content li,
-        .slide-theme-orange .presenter-info p {
-            color: #FFF3E0 !important;
+        .slide-orange-theme .slide-content p,
+        .slide-orange-theme .company-info p { /* content内のpタグと会社情報も対象 */
+            color: #FFF8E1 !important; /* クリーム色 */
         }
-        .slide-theme-orange .slide-number {
-            color: #FFE0B2 !important; 
+        .slide-orange-theme .slide-number {
+            color: #FFE0B2 !important; /* スライド番号は薄いオレンジ (Material Design Orange 100) */
         }
-        .slide-theme-orange .info-box { 
-            background-color: #FFCC80; 
-            border-left-color: #FB8C00; 
+        /* オレンジテーマのスライドでは、背景色を透過させないように調整 */
+        .slide-orange-theme .slide-title,
+        .slide-orange-theme .slide-content, 
+        .slide-orange-theme .company-info {
+            background-color: transparent !important; /* 親要素の背景色を継承 */
+            padding: 0; /* 不要なパディングをリセット */
         }
-        .slide-theme-orange .info-box p, .slide-theme-orange .info-box li,
-        .slide-theme-orange .info-box .sub-section-title {
-            color: #BF360C !important; 
+        .slide-orange-theme .slide-content > p { /* slide-content直下のpタグのパディングもリセット */
+            padding: 0; 
+        }
+        .slide-orange-theme .company-info {
+            margin-top: 15px; /* 会社情報の上マージン */
         }
 
-        .presenter-info {
-            font-size: 0.9em; /* 微調整 */
-            margin-top: 25px; /* マージン調整 */
-            line-height: 1.45; /* 微調整 */
-        }
-        .presenter-info p {
-            margin-bottom: 3px !important; 
-            text-align: center !important;
-        }
-
+        /* ナビゲーションコントロール */
         .navigation-controls {
             position: fixed;
-            bottom: 25px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 15px;
-            z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 12px 25px;
-            border-radius: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            gap: 15px; /* ボタン間のスペース */
+            z-index: 1000; /* 他の要素より手前に表示 */
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明の背景 */
+            padding: 10px 20px;
+            border-radius: 25px; /* 角を丸く */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
+
         .nav-button {
             padding: 10px 25px;
             font-size: 1em;
-            font-weight: 700;
+            font-weight: bold;
             color: #fff;
-            background-color: #1565C0; 
+            background-color: #1a237e; /* テーマカラーの青 */
             border: none;
-            border-radius: 20px;
+            border-radius: 20px; /* ボタンの角を丸く */
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
+
         .nav-button:hover {
-            background-color: #1E88E5; 
+            background-color: #283593; /* 少し明るい青 */
         }
         .nav-button:active {
-            transform: translateY(1px);
+            transform: translateY(1px); /* クリック時の沈み込み */
         }
+
         .nav-button:disabled {
-            background-color: #90A4AE; 
-            color: #CFD8DC; 
+            background-color: #9e9e9e; /* グレーアウト */
+            color: #e0e0e0;
             cursor: not-allowed;
+            box-shadow: none;
         }
         .slide-indicator {
             font-size: 1em;
-            font-weight: 700;
-            color: #0D47A1; 
+            font-weight: bold;
+            color: #1a237e;
             display: flex;
             align-items: center;
-            padding: 0 12px;
+            padding: 0 10px;
         }
 
-        .proposal-summary-box {
-            padding: 18px; /* パディング調整 */
-            border: 1px solid #90CAF9; 
-            border-radius: 12px;
-            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            margin-bottom: 12px; /* マージン調整 */
-        }
-        .proposal-summary-box .sub-section-title {
-            text-align: center;
-            font-size: 1.3em; /* 微調整 */
-            color: #0D47A1; 
-            margin-bottom: 6px; /* マージン調整 */
-            border-bottom: none;
-        }
-        .proposal-summary-box p {
-            text-align: center;
-            font-size: 1.0em; /* 微調整 */
-            color: #1A237E; 
-        }
-        
-        .effects-box {
-             padding: 12px; /* パディング調整 */
-             background-color: #fff;
-             border-radius: 10px;
-             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-             margin-bottom: 10px; /* マージン調整 */
-             border: 1px solid #E0E0E0;
-        }
-        .effects-box .sub-section-title {
-            color: #1565C0 !important; 
-            font-size: 1.1em !important; /* 微調整 */
-            margin-top: 0 !important;
-            margin-bottom: 5px !important; /* マージン調整 */
-            border-bottom: none !important;
-        }
-         .effects-box p, .effects-box li {
-            font-size: 0.85em !important; /* 微調整 */
-            line-height: 1.55 !important; /* 微調整 */
-         }
-
-        /* ペルソナテーブルのスタイル */
-        .persona-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.8em; /* テーブル全体のフォントサイズを小さめに */
-        }
-        .persona-table th, .persona-table td {
-            border: 1px solid #B0BEC5; /* (Material Blue Grey 200) */
-            padding: 6px 8px; /* セルのパディングを小さめに */
-            text-align: left;
-            vertical-align: top; /* 内容が多い場合に上揃え */
-        }
-        .persona-table th {
-            background-color: #ECEFF1; /* (Material Blue Grey 50) */
-            font-weight: 700;
-            color: #37474F; /* (Material Blue Grey 800) */
-            font-size: 0.9em; /* ヘッダーのフォントサイズ */
-        }
-        .persona-table td ul {
-            padding-left: 15px; /* リストのインデント調整 */
-            margin-top: 3px;
-        }
-        .persona-table td ul li {
-            font-size: 0.95em; /* リストアイテムのフォントサイズ */
-            margin-bottom: 3px; /* リストアイテム間のマージン */
-            padding-left: 18px; /* マーカー位置調整 */
-        }
-        .persona-table td ul li::before {
-            font-size: 0.9em; /* マーカーサイズ調整 */
-            left: 2px;
-            top: 0;
-        }
-        .persona-table .highlight-persona {
-            background-color: #FFF9C4; /* (Material Yellow 100) */
-        }
-        .persona-table .needs-課題 {
-             min-width: 150px; /* ニーズ/課題カラムの最小幅 */
-        }
     </style>
 </head>
 <body>
 
     <div class="slide-container">
-        <div id="slide1" class="slide slide-theme-orange active">
-            <div class="slide-main-content">
-                <h1 class="slide-title" style="font-size: 2.3em; line-height:1.3;">【提案タイトル】<br>業態特化型WEBソリューション戦略の深化と<br>診断導線を活用したInstagram広告戦略の最適化</h1>
-                <p style="font-size: 1.25em; margin-bottom: 25px; text-align:center;">属人化を防ぎ、事業スケールを目指す戦略設計</p>
-                <div class="presenter-info">
-                    <p>(貴社名/ご担当者名)</p>
-                    <p id="currentDate">2025年5月20日</p>
+        <div class="slide slide-1 slide-orange-theme active"> 
+            <div class="slide-content">
+                <h1 class="slide-title">Yoshizo様へのご提案</h1>
+                <p style="font-size: 1.5em; margin-bottom: 30px;">〜お客様にもっと愛され、もっと足を運んでもらうために〜</p>
+                <div class="company-info">
+                    <p>株式会社△△</p>
+                    <p>担当：□□</p>
+                    <p>2025年5月16日</p>
                 </div>
             </div>
-            <div class="slide-number">1 / 7</div>
+            <div class="slide-number">1 / 15</div>
         </div>
 
-        <div id="slide2" class="slide">
-            <div class="slide-main-content">
-                <h2 class="slide-title" style="margin-bottom: 10px;">背景・現状の課題感</h2>
-                
-                <div class="section-title" style="margin-top: 0; margin-bottom: 8px; font-size: 1.4em;">市場環境</div>
-                <div class="slide-content" style="font-size: 0.9em;">
-                    <ul>
-                        <li>学びや調べものがYoutubeやTiktok中心に変化。Youtubeなどで信頼獲得が可能に。</li>
-                        <li>インフレ・原価高騰、人件費・家賃の高騰。</li>
-                        <li>消費人口減、実質賃金減による外食回数減、「失敗しない飲食店選び」加速。付加価値や口コミ高評価が売上に直結する時代。</li>
-                    </ul>
+        <div class="slide">
+            <h2 class="slide-title">本日お伝えしたいこと</h2>
+            <div class="slide-content">
+                <div class="icon-text" style="margin-bottom: 40px;">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    <p style="text-align: left; margin-left: 10px;"><strong>現状の再確認と課題の見える化：</strong><br>オーナー様のお店の「今」と「これから」を一緒に考えます。</p>
                 </div>
+                <div class="icon-text">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-3v3h-2v-3H9v-2h3V8h2v3h3v2z"/></svg>
+                    <p style="text-align: left; margin-left: 10px;"><strong>改善に向けた次の一歩：</strong><br>次回60分で具体的な「改善計画」をご提案させてください。</p>
+                </div>
+            </div>
+            <div class="slide-number">2 / 15</div>
+        </div>
 
-                <div class="section-title" style="margin-top: 8px; margin-bottom: 8px; font-size: 1.4em;">自社の現状（課題）</div>
-                <div class="slide-content" style="font-size: 0.9em;">
-                    <div class="two-column-layout" style="gap: 10px; margin-top:0px;">
-                        <div class="column" style="background-color: #fff; padding: 8px;">
-                            <h3 class="sub-section-title" style="margin-top:0; margin-bottom: 4px; color: #C62828; font-size: 1.0em;"><span class="highlight-text">■</span> 内的課題</h3>
-                            <ul><li>人によって商品クオリティが変化し、組織で対応できない（属人化）。</li><li>営業、DR、DE、CS/コキャマンで評価制度と目的が違う。</li><li>人材などweb以外のサービス理解・認知が低い。</li></ul>
-                        </div>
-                        <div class="column" style="background-color: #fff; padding: 8px;">
-                            <h3 class="sub-section-title" style="margin-top:0; margin-bottom: 4px; color: #C62828; font-size: 1.0em;"><span class="highlight-text">■</span> 外的課題</h3>
-                            <ul><li>他社web制作会社やグルメサイトとの違いが分かりづらい。</li><li>認知度が低い。グルメサイトと同一カテゴリに見られがち。</li><li>webサイトのイメージが良くない（飲食業界において）。</li><li>FCの強みが不明確で営業マンしか伝えられない。</li></ul>
-                        </div>
-                    </div>
-                     <div class="two-column-layout" style="gap: 10px; margin-top:8px;">
-                        <div class="column" style="background-color: #fff; padding: 8px;">
-                            <h3 class="sub-section-title" style="margin-top:0; margin-bottom: 4px; color: #C62828; font-size: 1.0em;"><span class="highlight-text">■</span> メディア活用課題</h3>
-                            <ul><li>メディアを全く活用できていない（インスタ、X皆無）。</li><li>メディア活用を担う専門部署・担当不在。</li><li>潜在・既存顧客へのコミュニケーション戦略がない。</li></ul>
-                        </div>
-                        <div class="column" style="background-color: #fff; padding: 8px;">
-                            <h3 class="sub-section-title" style="margin-top:0; margin-bottom: 4px; color: #C62828; font-size: 1.0em;"><span class="highlight-text">■</span> 既存プロセス課題</h3>
-                            <ul><li>新規問い合わせ後の理解・商談フェーズが営業マンのトークスキルに依存。</li><li>顧客の情報収集元とFCのタッチポイントが少ない可能性。</li></ul>
-                        </div>
-                    </div>
+        <div class="slide">
+            <h2 class="slide-title">Yoshizo様の素晴らしい魅力！</h2>
+            <div class="slide-content">
+                <div class="google-review-mock">
+                    <p><strong>Google口コミ <span class="stars">★★★★☆</span> 4.7！</strong> 高い顧客満足度！</p>
                 </div>
-                
-                <div class="section-title" style="margin-top: 8px; margin-bottom: 5px; font-size: 1.4em;">ターゲットオーディエンスの課題・ニーズ（ペルソナ）</div>
-                <div class="slide-content" style="font-size: 0.85em;">
-                    <p style="margin-bottom: 4px;">飲食店のオーナー層は、集客、売上アップ、採用、店舗運営の課題を感じている。彼らは、勉強熱心で、YoutubeやInstagramを中心に情報収集を行う傾向がある が、「なんとなく良い集客方法がないか」と探す一方、「よくある話かな～」や「結局はなんなの？どんなサービス？」と感じやすい。特に<strong class="highlight-text">「自店に似た事例を探す」傾向が強い</strong>。</p>
-                    <p style="margin-bottom: 4px; font-weight: 500;">主なペルソナは以下の3タイプです：</p>
-                    <table class="persona-table">
-                        <thead>
-                            <tr>
-                                <th>ペルソナ</th>
-                                <th>対象</th>
-                                <th class="needs-課題">ニーズ/課題</th>
-                                <th>優先度/営業難易度</th>
-                                <th>情報収集/タッチポイント</th>
-                                <th>特徴</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>A</td>
-                                <td>1～2店舗の居酒屋、ビストロ、イタリアン、焼肉店で現場に立っているオーナー。</td>
-                                <td>月商50万円アップ、集客アップ、客数アップ、数席余剰がある。</td>
-                                <td>高 / 中</td>
-                                <td>YT/TikTok・同業者・仕入れ業者営業マン / YT/TikTok・テレアポ</td>
-                                <td>日々の現場業務をこなしつつ、経営改善に関心が高い層。</td>
-                            </tr>
-                            <tr>
-                                <td>B</td>
-                                <td>3店舗以上経営。地域では有名店だが、もっと出店したい意欲的で社会貢献や業界発展なども考えるオーナー。</td>
-                                <td>採用できない・人が続かない、応募がない、採用できても続かない。</td>
-                                <td>中～高 / 高</td>
-                                <td>経営者コミュニティ、Youtube・セミナー、同業コミュニティ、同業SNS / 紹介・Youtube・セミナー・SNS広告・ビール会社営業マン</td>
-                                <td>事業拡大を目指し、人材確保が喫緊の課題。多角的な情報収集を行う。</td>
-                            </tr>
-                            <tr>
-                                <td>C</td>
-                                <td>単価1万円を超えるような高級店。もっと料理を追求し、わざわざ来る人を増やしたいオーナー。</td>
-                                <td>地元の人からは高い店というイメージ、もっと有名になりたい、ブランディング。</td>
-                                <td>中～高 / 中～高</td>
-                                <td>insta広告・同業・仕入れ業者・雑誌？ / insta広告・同業・仕入れ業者・雑誌？</td>
-                                <td>高単価層をターゲットとし、さらなる料理やブランド価値向上に関心がある。特定のメディアで情報収集。</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <ul>
+                    <li>「街にない掛け算」：創作中華 × ワイン・クラフトビールの独自性</li>
+                    <li>（ヒアリングで得たその他ポジティブな情報。例：「串中華とワインのペアリング、大変評判が良いと伺っております！」）</li>
+                </ul>
                 </div>
+            <div class="slide-number">3 / 15</div>
+        </div>
 
-                <div class="info-box" style="margin-top: 8px; margin-bottom:0; border-left-color: #FF6F00; padding: 10px;">
-                    <h3 class="sub-section-title" style="color: #E65100; margin-bottom: 4px; font-size: 1.0em;">この状況から目指す姿</h3>
-                    <div class="slide-content" style="font-size: 0.85em;">
+        <div class="slide">
+            <h2 class="slide-title small">オーナー様のお考えとお店の現状</h2>
+            <div class="slide-content" style="text-align: left; font-size: 1em; line-height: 1.9;">
+                <ul>
+                    <li><strong>お店の強み：</strong> 創作中華×ワイン・クラフトビールという「街にない掛け算」</li>
+                    <li><strong>お店の立地：</strong> 住宅街・商業施設MINANO動線外で「目的来店が前提」</li>
+                    <li><strong>集客の工夫：</strong> 食べログ、ホットペッパーに加え、自社アプリも活用し「数より頻度を狙う設計」</li>
+                    <li><strong>現状の数字：</strong> 屋号検索は月70回。Google口コミは高評価（★4.7）だが件数はまだ少ない。「<span class="highlight">満足度は高いが露出が薄い</span>」状況</li>
+                    <li><strong>オーナー様の願い：</strong> 20〜40代のお客様、団体・個人問わず来店してほしい。特に平日昼・夜を強化し、「<span class="highlight">商圏人口×リピート</span>」を増やしたい。</li>
+                </ul>
+            </div>
+            <div class="slide-number">4 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">さらなる成長へのカギ：「頻度ビジネス」の最適化</h2>
+            <div class="slide-content">
+                <p style="font-size: 1.3em; margin-bottom: 30px;">お客様の満足度は高い！</p>
+                <p style="margin-bottom: 30px;">しかし…「常連さん」を増やす仕組み（＝頻度ビジネスの構造）に、<br>少し<span class="highlight">”ズレ”</span>があるかもしれません。</p>
+                
+                <div class="gear-container">
+                    <div class="gear">仕組みA</div>
+                    <div class="gear mismatched" style="margin-left: -20px;">仕組みB</div>
+                </div>
+                <p style="font-size: 1.2em; font-weight: bold; margin-top: 30px;">この”ズレ”を解消することが、お店の成長のカギ！</p>
+            </div>
+            <div class="slide-number">5 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">お店のファンを増やす方程式</h2>
+            <div class="slide-content">
+                <div class="equation">
+                    <span>数 (Volume)</span> <span class="operator">×</span> <span>質 (Quality)</span> <span class="operator">＝</span> <span>反響</span>
+                </div>
+                <p style="margin-bottom:15px;"><strong>数（Volume）：</strong> まず、お店を知ってもらうこと（露出・認知）</p>
+                <p style="margin-bottom:30px;"><strong>質（Quality）：</strong> 次に、お店の魅力を感じてもらうこと（興味・体験）</p>
+                <p style="font-size: 1.2em; font-weight:bold;">この2つの掛け算で、お客様からの「反響」が生まれます！</p>
+                <p style="font-size: 1.3em; font-weight:bold; color: #4caf50; margin-top:20px;">そしてその先へ… → 「再来店＝リピーター」へ！</p>
+                </div>
+            <div class="slide-number">6 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title small">Yoshizo様の「数」と「質」の現状は？</h2>
+            <div class="slide-content">
+                <div class="two-column-layout">
+                    <div class="column">
+                        <h3>「数」（知ってもらう機会）</h3>
                         <ul>
-                            <li>属人化を防ぎながら、事業をスケールさせる。</li>
-                            <li>飲食業界で「webマーケ・ブランディング・webサイト制作＝FC」という立場を創る。</li>
-                            <li>売上アップ（コンサルのみで月10本問い合わせ受注目標）。</li>
-                            <li>データに基づいた改善を継続的に行う。</li>
+                            <li>屋号検索（お店を知っている人）：月70回 → 安定しているが、新規顧客への広がりは限定的？</li>
+                            <li>グルメサイト：新規客獲得の場だが、手数料コストが気になる…</li>
+                            <li style="color: #d32f2f; font-weight:bold;">課題かも？： 「新しいお客様」に知ってもらう機会がもっと増やせるのでは？</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3 style="word-break: keep-all;">「質」（魅力を感じてもらう体験）</h3>
+                        <ul>
+                            <li>Google口コミ★4.7：来店客の満足度は非常に高い！</li>
+                            <li>自社アプリ：リピート促進のツールだが、もっと活用できる可能性も？</li>
+                            <li>口コミ件数：高評価だが、件数がもっと増えれば信頼性UP！</li>
+                            <li style="color: #d32f2f; font-weight:bold;">課題かも？： 高い満足度を「来店前の期待感」や「さらなる再来店」に繋げきれていない？</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div class="slide-number">2 / 7</div>
+            <div class="slide-number">7 / 15</div>
         </div>
 
-        <div id="slide3" class="slide">
-            <div class="slide-main-content" style="justify-content: center;">
-                <h2 class="slide-title">ご提案の概要</h2>
-                <div class="slide-content">
-                    <p style="font-size: 1.1em; text-align:center; margin-bottom: 20px;">今回の提案は、上記の課題（特に属人化と顧客の情報収集・理解課題）を踏まえ、以下の2点を軸に事業スケールを目指します。</p>
-                    <div class="two-column-layout" style="align-items: stretch; gap: 20px;">
-                        <div class="proposal-summary-box column">
-                            <h3 class="sub-section-title">事業の進化方向性</h3>
-                            <p>「業態特化型ソリューションの深化」</p>
-                        </div>
-                        <div class="proposal-summary-box column">
-                            <h3 class="sub-section-title">集客導線の最適化</h3>
-                            <p>「診断導線を活用したInstagram広告戦略」</p>
-                        </div>
-                    </div>
+        <div class="slide">
+            <h2 class="slide-title">お客様の流れ、どこかで“詰まって”いませんか？</h2>
+            <div class="slide-content">
+                <p style="font-size:1.1em; margin-bottom: 20px;"><strong>理想の流れ：</strong></p>
+                <div class="flow-chart">
+                    <div class="flow-step">知る<br>(露出)</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">興味を持つ<br>(認知)</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">来店<br>する</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">満足<br>する</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">また来る<br>(再来店)</div>
                 </div>
+                <p style="font-size:1.1em; margin-top: 30px; margin-bottom: 10px;"><strong>Yoshizo様の現状：</strong></p>
+                <div class="flow-chart" style="margin-top:10px;">
+                    <div class="flow-step clog-point"><span style="white-space: nowrap;">「知る（露出）」</span><br><small>機会が限定的？<br>(特に新規顧客)</small></div>
+                    <div class="flow-arrow">→ … →</div>
+                    <div class="flow-step" style="border-color: #4caf50; background-color: #e8f5e9;">満足度は<br>高い！</div>
+                    <div class="flow-arrow">→ … →</div>
+                    <div class="flow-step clog-point"><span style="white-space: nowrap;">「また来る（再来店）」</span><br><small>もう一歩！</small></div>
+                </div>
+                <p style="font-size: 1.2em; font-weight: bold; margin-top: 30px;">つまり…「<span class="highlight">入口（新規集客）</span>」と「<span class="highlight">出口（リピート化）</span>」に改善のチャンス！</p>
             </div>
-            <div class="slide-number">3 / 7</div>
+            <div class="slide-number">8 / 15</div>
         </div>
 
-        <div id="slide4" class="slide">
-            <div class="slide-main-content">
-                <h2 class="slide-title" style="margin-bottom: 12px;">提案ポイント①：事業の進化方向性<br><span style="font-size:0.7em; color: #546E7A;">（属人化解消への相関）</span></h2>
-                
-                <div class="section-title" style="margin-bottom:8px; font-size:1.5em;">方向性：「業態特化型WEBソリューションの深化」</div>
-                <div class="slide-content" style="font-size:0.95em;">
-                    <p style="margin-bottom:8px;">貴社の強みである「飲食店専門」、「webのクオリティが高い・専門家集団」、「サポート力が高い」を活かす。</p>
-                    <div class="info-box" style="background-color: #FFF9C4; border-left-color: #FBC02D; padding:10px; margin: 8px 0;">
-                         <p style="color: #795548; font-size:0.95em;">例: 寿司屋向け、焼鳥屋向けなど、特定の業態に特化した制作パッケージを構築。これは、ペルソナが「自店に似た事例を探す」傾向が強いことに応える方向性です。</p>
-                    </div>
+        <div class="slide">
+            <h2 class="slide-title">もし、お客様が<br>“月にあと1回”多く来てくれたら…？</h2>
+            <div class="slide-content">
+                <p class="big-keyword">「月にあと1回」</p>
+                <p style="font-size: 1.2em; margin-bottom: 30px;">来てもらうだけで、お店の利益は劇的に変わります！</p>
+                <p style="font-size: 1.1em; margin-top: 30px;">そのために必要なのは…</p>
+                <p style="font-size: 1.2em; font-weight:bold; color:#1a237e;">入口の拡大： <span style="color:#333; font-weight:normal;">新しいお客様にもっと知ってもらう！</span></p>
+                <p style="font-size: 1.2em; font-weight:bold; color:#1a237e;">接点の強化： <span style="color:#333; font-weight:normal;">今のお客様にもっと喜んでもらう！</span></p>
+            </div>
+            <div class="slide-number">9 / 15</div>
+        </div>
 
-                    <h3 class="sub-section-title" style="margin-top:10px; margin-bottom:6px; font-size:1.15em;">期待される効果<span style="font-size:0.8em; color: #546E7A;">（ペルソナへの間接効果と組織課題解消）</span></h3>
+        <div class="slide">
+            <h2 class="slide-title extra-large-centered">事例紹介</h2>
+            <div class="slide-content">
+                <p style="font-size: 1.2em; color: #555; margin-top: 20px;">（詳細や具体的な数値を詳しくご説明します）</p>
+            </div>
+            <div class="slide-number">10 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">解決の方向性</h2>
+            <div class="slide-content" style="text-align: left;"> 
+                <ul class="centered-text-list" style="padding-left: 0;"> 
+                    <li>
+                        <p class="list-item-title">① 行ってみたくなる「質」の改善</p>
+                        <p class="list-item-description">
+                            ネット上で、正しいお店の魅力を表現し、入り辛さや情報不足の解消をします。<br>
+                            価格以上に価値あるお店だと理解していただき、「わざわざ行ってみたい」と思わせる仕掛けを作ります。
+                        </p>
+                    </li>
+                    <li>
+                        <p class="list-item-title">② 知ってもらう「数」の改善</p>
+                        <p class="list-item-description">
+                            上記①で磨き上げた情報を、まだお店を知らないターゲット層（例：お店の周辺にお住まいの20〜40代の方、近隣の企業にお勤めの方、新しいもの好きな方など）に的確に届け、<br>
+                            現状限定的な認知を最大限に拡大していきます。
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <div class="slide-number">11 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">結論</h2>
+            <div class="slide-content" style="text-align: left;">
+                <p style="font-size: 1.2em; color: #1a237e; text-align:center; margin-bottom:25px;"><strong>「今すぐやらなくてはいけないこと」「やるべきこと」</strong></p>
+                <ul class="problem-list-container">
+                    <li class="problem-list">お店の「独自の魅力」や「オーナー様の想い」が十分に伝わらず、新規顧客の来店動機やファン化に繋がっていない。
+                        <br><span class="sub-description">→ <span class="highlight">WEBサイトで「創作中華×ワイン」の独自性やストーリーを魅力的に表現し、オーナー様の情熱を伝えることで共感を呼び、お店のファンを増やします。</span></span></li>
+                    <li class="problem-list">屋号検索はされても、メニュー詳細（特に平日昼・夜の魅力）、価格帯、店内の雰囲気が不明瞭で、来店へのハードルとなっている。
+                        <br><span class="sub-description">→ <span class="highlight">WEBサイトにランチ・ディナー別の詳細な情報（メニュー、価格、写真）を掲載し、特に強化したい平日の利用イメージを明確にすることで、来店前の不安を解消し、期待感を高めます。</span></span></li>
+                    <li class="problem-list">Google口コミの高評価を活かしきれず、自社アプリも既存顧客との関係強化や再来店促進に最大限貢献できていない。
+                        <br><span class="sub-description">→ <span class="highlight">WEBサイトでお客様の声を効果的に紹介し、アプリとの連携で限定情報や特典を発信。これにより信頼性を高め、リピーター獲得と顧客エンゲージメント向上を目指します。</span></span></li>
+                </ul>
+                <p style="text-align:center; margin-top:40px; font-size: 1.2em; font-weight:bold; color: #d32f2f;">
+                    これらの問題点3つは、FCで全て解消可能です。
+                </p>
+            </div>
+            <div class="slide-number">12 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">本日のまとめと次回のお願い</h2>
+            <div class="slide-content" style="text-align: left;">
+                <h4>本日のポイント：</h4>
+                <ul>
+                    <li>Yoshizo様の強みと、現状の「頻度ビジネス」における小さな”ズレ”を共有しました。</li>
+                    <li>「数」×「質」の視点から、「入口（特に質）」と「出口」に改善のチャンスが見えてきました。</li>
+                </ul>
+                <h4 style="margin-top:30px;">次回ご提案したいこと：</h4>
+                <ul>
+                    <li>具体的なデータに基づいた「質を高める入口戦略」と「出口戦略」の改善計画</li>
+                    <li>オーナー様と一緒に「お客様に愛され、選ばれるお店」作りを！</li>
+                </ul>
+                <p style="font-size: 1.3em; font-weight: bold; text-align:center; margin-top: 40px; color: #4caf50; padding:15px; border: 2px dashed #4caf50; border-radius: 8px;">
+                    「月にもう1回」来てもらうための<br>「入口（質向上）×出口（再来店促進）設計」を、<br>次回60分で一緒に作りませんか？
+                </p>
+            </div>
+            <div class="slide-number">13 / 15</div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">次回お打ち合わせの<br>ご希望日程について</h2>
+            <div class="slide-content">
+                <div class="calendar-mock">
+                    <h4>候補日程例：</h4>
                     <ul>
-                        <li>ノウハウの蓄積・深化 → <span class="accent-text">専門性訴求力向上</span>。「飲食店専門＝ノウハウ・プロの仕事」という強みのPRに繋がる。</li>
-                        <li>制作・営業プロセスのテンプレート化 → <span class="accent-text">再現性向上</span>。</li>
-                        <li>再現性向上 → <span class="accent-text">外注化・営業の非属人化が可能</span>（「人によって商品クオリティが変化」 の課題解消に繋がる）。これにより、誰が担当しても高品質なサービス提供を目指し、結果的に顧客（ペルソナA, B, C）への安定した価値提供に繋がる。</li>
+                        <li>5月23日（金） 午後</li>
+                        <li>5月27日（火） 午後</li>
+                        <li>6月3日（火） 午前または午後</li>
+                        <li>6月5日（木） 午後</li>
                     </ul>
-
-                    <h3 class="sub-section-title" style="margin-top:10px; margin-bottom:6px; font-size:1.15em;">コンサルティングの立ち位置</h3>
-                    <p>属人的なコンサル拡大の難しさ（営業マンのスキル依存課題）を踏まえ、コンサル要素は<span class="highlight-text">「知見収集＆商品化」に限定</span>。</p>
-                    <p>コンサルで得られた知見を汎用化・テンプレ化し、ソリューション商品に変換することで<span class="accent-text">スケーラビリティを重視</span>。</p>
-                </div>
+                    <p style="margin-top:15px;">上記以外の日程でも調整可能です。</p>
+                    </div>
+                <p style="font-size: 1.2em; font-weight: bold; margin-top: 40px;">
+                    ご希望の日時をお聞かせいただけますでしょうか。
+                </p>
             </div>
-            <div class="slide-number">4 / 7</div>
+            <div class="slide-number">14 / 15</div>
         </div>
 
-        <div id="slide5" class="slide">
-            <div class="slide-main-content">
-                <h2 class="slide-title" style="margin-bottom:8px; font-size: 2em;">提案ポイント②：集客導線の最適化<br><span style="font-size:0.6em; color: #546E7A;">（ペルソナの情報収集・理解課題解消への相関）</span></h2>
-
-                <div class="section-title" style="margin-bottom:6px; margin-top:4px; font-size:1.4em;">課題</div>
-                <div class="slide-content" style="font-size:0.9em;">
-                    <p style="margin-bottom:4px;">Instagram広告単体では、細かい「業態」でのセグメントが広告属性として難しく、精度の限界がある。<span style="font-size: 0.8em; color: #78909C; display: block; margin-top: 2px;">（※広告プラットフォームの一般的な仕様に基づく推測であり、ソースに直接的な記載はありません。デジタル広告では年齢、性別、興味関心、行動履歴などでターゲティング可能ですが、ペルソナが「自店に似た事例を探す」という特定のニーズを持っている点からは、一般的なターゲティングでは不十分な可能性が示唆されます）。</span>また、ペルソナはサービス概要を「ん～、結局はなんなの？どんなサービス？」と理解しきれない場合や、「ホームページだけか・・・」と限定的なイメージを持つ可能性がある。</p>
-                </div>
-                
-                <div class="section-title" style="margin-top: 8px; margin-bottom:6px; font-size:1.4em;">代替策/解決策：「診断シート→業態別LP誘導」の導線構成が有効</div>
-                <div class="slide-content" style="font-size:0.9em;">
-                    <p style="font-weight: 500; margin-bottom: 4px;">導線イメージ:</p>
-                </div>
-                <div class="flow-chart-container" style="margin: 6px 0;">
-                    <div class="flow-step">広告接触<br>(認知/興味)</div>
-                    <div class="flow-arrow">&rarr;</div>
-                    <div class="flow-step" style="border-color: #FF8F00; background-color: #FFF3E0;">診断UX<br>(理解)</div>
-                    <div class="flow-arrow">&rarr;</div>
-                    <div class="flow-step">業態別LP<br>(比較検討)</div>
-                    <div class="flow-arrow">&rarr;</div>
-                    <div class="flow-step">問い合わせ</div>
-                </div>
-                
-                <div class="slide-content" style="margin-top:6px; font-size:0.9em;">
-                    <h4 class="sub-section-title" style="font-size:1.0em; margin-bottom:4px;"><span class="accent-text">■</span> 診断UX</h4>
-                    <p>Instagram広告などのタッチポイントから来たユーザーに「あなたの飲食業態に最適なWEB導線を、60秒診断でチェック！」のようなメッセージで誘導。診断プロセスでユーザーに自身の「業態」や「課題」を選択させることで、ペルソナの状況を特定する。これは、ペルソナA, B, Cそれぞれの異なる業態や課題に合わせたアプローチの糸口となる。</p>
-
-                    <h4 class="sub-section-title" style="font-size:1.0em; margin-top:6px; margin-bottom:4px;"><span class="accent-text">■</span> 業態別LP</h4>
-                    <p>選択された業態や課題に最適化された情報（事例、ソリューション詳細）を提供するLPへ分岐誘導。これは「自店に似た事例を探す」というペルソナの行動特性に直接的に応える。特定の業態の事例を見ることで、ペルソナは「良い商品そうだ」と感じやすくなり、具体的なサービス内容や自分に関係がある情報だと認識しやすくなる。</p>
-                </div>
-
-                <div class="info-box" style="margin-top: 8px; background-color: #E8EAF6; border-left-color: #3F51B5; padding:10px;">
-                    <h3 class="sub-section-title" style="color: #1A237E; font-size:1.05em; margin-bottom:4px;">期待される効果<span style="font-size:0.8em; color: #546E7A;">（ペルソナへの直接効果）</span></h3>
-                    <div class="slide-content" style="font-size:0.85em;">
-                        <ul>
-                            <li>Instagram広告のターゲティング限界を補完。よりニーズが顕在化したペルソナ（特に業態や課題が明確な層）を効率的に絞り込む。</li>
-                            <li>顧客の自己選択による納得感向上（顧客は「自店に似た事例を探す」傾向）。「良い商品そうだけど、、、高いな」「ホームページだけか・・・」 といった漠然とした不安や限定的なイメージを払拭し、具体的な価値を理解してもらいやすくなる。</li>
-                            <li>顧客体験の個別最適化（パーソナライゼーションの実現）。ペルソナ一人ひとりの状況や課題に合わせた情報提供が可能となり、理解促進に繋がる。</li>
-                            <li>顧客情報の構造化と成果の見える化（組織側メリット）。</li>
-                            <li>スムーズな理解・比較検討への移行促進。営業マンのトークスキル依存を補完し、問い合わせ時点での顧客のサービス理解度を高める。</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="slide-content" style="margin-top:6px; font-size:0.9em;">
-                    <h3 class="sub-section-title" style="font-size:1.0em; margin-bottom:4px;">初期実装について</h3>
-                    <p>開発負荷が低く、ABテストも容易な<span class="highlight-text">ノーコードツール（Formrunなど）での実装が可能</span>（データに基づいた改善を迅速に）。</p>
-                </div>
+        <div class="slide slide-orange-theme"> 
+            <h2 class="slide-title">ご清聴ありがとうございました</h2>
+            <div class="slide-content contact-info">
+                <p>株式会社△△</p>
+                <p>担当：□□</p>
+                <p>電話番号：XXX-XXXX-XXXX</p>
+                <p>メールアドレス：xxxx@example.com</p>
             </div>
-            <div class="slide-number">5 / 7</div>
-        </div>
-
-        <div id="slide6" class="slide">
-            <div class="slide-main-content" style="justify-content: center;">
-                <h2 class="slide-title" style="margin-bottom:12px;">期待される総合的な効果</h2>
-                <div class="slide-content" style="margin-top: 8px;">
-                    <div class="two-column-layout" style="gap:12px;">
-                        <div class="column effects-box" style="padding:10px;">
-                            <h3 class="sub-section-title">属人化の解消と標準化</h3>
-                            <p>営業・制作チームのプロセスが標準化され、個人のスキル依存を低減。ペルソナA, B, Cに対し、誰が担当しても安定したクオリティでサービスを提供できる体制強化。</p>
-                        </div>
-                        <div class="column effects-box" style="padding:10px;">
-                            <h3 class="sub-section-title">スケーラビリティ向上</h3>
-                            <p>業態特化ソリューションのパッケージ化と非属人化により、事業拡大の基盤を強化。</p>
-                        </div>
-                    </div>
-                    <div class="two-column-layout" style="gap:12px; margin-top:12px;">
-                        <div class="column effects-box" style="padding:10px;">
-                            <h3 class="sub-section-title">データに基づいた改善</h3>
-                            <p>診断データにより、ペルソナA, B, Cそれぞれの業態ごと、課題ごとの顧客ニーズを把握し、よりターゲット（ペルソナ）に合ったPDCAサイクルを高速化。</p>
-                        </div>
-                        <div class="column effects-box" style="padding:10px;">
-                            <h3 class="sub-section-title">顧客体験向上</h3>
-                            <p>パーソナライズされた情報提供と自己選択プロセスにより、ペルソナの理解促進と満足度向上。「顧客が企業と接する全てのタッチポイントで、良質な体験を提供することを目指す」。</p>
-                        </div>
-                    </div>
-                     <div class="effects-box" style="margin-top:12px; width:100%; max-width: 560px; margin-left:auto; margin-right:auto; padding:10px;">
-                        <h3 class="sub-section-title" style="text-align:center;">効率的なリード獲得</h3>
-                        <p style="text-align:center;">診断導線により、興味を持ったペルソナを効率的に問い合わせに繋げる。</p>
-                    </div>
-                </div>
-            </div>
-            <div class="slide-number">6 / 7</div>
-        </div>
-
-        <div id="slide7" class="slide slide-theme-orange">
-            <div class="slide-main-content" style="justify-content: center;">
-                <h2 class="slide-title">今後の進め方</h2>
-                <div class="slide-content">
-                    <p style="text-align:center; margin-bottom: 18px; font-size: 1.1em;">本提案内容に基づき、以下のステップでプロジェクトを推進します。</p>
-                    <ol style="max-width: 560px; margin: 0 auto; background-color: rgba(255,255,255,0.1); padding: 18px; border-radius: 10px;">
-                        <li style="font-size: 1.05em; margin-bottom:10px;">詳細なアクションプラン策定へ</li>
-                        <li style="font-size: 1.05em; margin-bottom:10px;">初期実装（ノーコード診断シート）の準備とテスト</li>
-                        <li style="font-size: 1.05em; margin-bottom:10px;">Instagram広告クリエイティブ・メッセージの具体化</li>
-                        <li style="font-size: 1.05em; margin-bottom:10px;">業態別LPの企画・制作</li>
-                        <li style="font-size: 1.05em;">効果測定体制の構築</li>
-                    </ol>
-                    <p style="margin-top: 25px; font-size: 1.25em; font-weight: 700; text-align:center;">ご清聴ありがとうございました。</p>
-                </div>
-            </div>
-            <div class="slide-number">7 / 7</div>
+            <div class="slide-number">15 / 15</div>
         </div>
     </div>
 
     <div class="navigation-controls">
         <button id="prev-slide-button" class="nav-button">前のスライドへ</button>
-        <span id="slide-indicator" class="slide-indicator">1 / 7</span>
+        <span id="slide-indicator" class="slide-indicator">1 / 15</span>
         <button id="next-slide-button" class="nav-button">次のスライドへ</button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // スライド要素、ボタン要素、スライドインジケーターを取得
             const slides = document.querySelectorAll('.slide');
             const prevButton = document.getElementById('prev-slide-button');
             const nextButton = document.getElementById('next-slide-button');
             const slideIndicator = document.getElementById('slide-indicator');
-            let currentSlideIndex = 0;
-            const totalSlides = slides.length;
+            let currentSlideIndex = 0; // 現在表示しているスライドのインデックス
+            const totalSlides = slides.length; // 合計スライド数
 
+            // 指定されたインデックスのスライドを表示する関数
             function showSlide(index) {
-                slides.forEach((slide, i) => {
+                // すべてのスライドを非表示にする
+                slides.forEach(slide => {
                     slide.classList.remove('active');
-                    if (i === index) {
-                        slide.classList.add('active');
-                    }
                 });
+                // 指定されたスライドを表示する
+                slides[index].classList.add('active');
+                // 現在のスライドインデックスを更新
                 currentSlideIndex = index;
+                // ボタンの状態を更新
                 updateButtonStates();
+                // スライドインジケーターを更新
                 updateSlideIndicator();
             }
 
+            // スライドインジケーターの表示を更新する関数
             function updateSlideIndicator() {
                 slideIndicator.textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
             }
 
+            // ナビゲーションボタンの有効/無効状態を更新する関数
             function updateButtonStates() {
+                // 「前のスライドへ」ボタン：最初のスライドでは無効
                 prevButton.disabled = currentSlideIndex === 0;
+                // 「次のスライドへ」ボタン：最後のスライドでは無効
                 nextButton.disabled = currentSlideIndex === totalSlides - 1;
             }
 
+            // 「次のスライドへ」ボタンのクリックイベント
             nextButton.addEventListener('click', () => {
                 if (currentSlideIndex < totalSlides - 1) {
                     showSlide(currentSlideIndex + 1);
                 }
             });
 
+            // 「前のスライドへ」ボタンのクリックイベント
             prevButton.addEventListener('click', () => {
                 if (currentSlideIndex > 0) {
                     showSlide(currentSlideIndex - 1);
                 }
             });
 
+            // キーボードの矢印キーでの操作
             document.addEventListener('keydown', (event) => {
-                if (event.key === 'ArrowRight' || event.key === 'PageDown') {
+                if (event.key === 'ArrowRight') { // 右矢印キー
                     if (currentSlideIndex < totalSlides - 1) {
                         showSlide(currentSlideIndex + 1);
                     }
-                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                } else if (event.key === 'ArrowLeft') { // 左矢印キー
                     if (currentSlideIndex > 0) {
                         showSlide(currentSlideIndex - 1);
                     }
                 }
             });
-            
-            const dateElement = document.getElementById('currentDate');
-            if (dateElement) {
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = today.getMonth() + 1; 
-                const day = today.getDate();
-                dateElement.textContent = `${year}年${month}月${day}日`;
-            }
 
-            showSlide(0); 
+            // 初期表示：最初のスライドを表示し、ボタンの状態を更新
+            showSlide(0);
         });
     </script>
 
